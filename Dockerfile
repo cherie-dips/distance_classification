@@ -7,8 +7,11 @@ WORKDIR /app
 # Copy all project files into the container
 COPY . .
 
-# Install dependencies
-RUN pip install --no-cache-dir numpy pandas scikit-learn wandb
+# Install dependencies, including OpenCV and Jupyter
+RUN pip install --no-cache-dir numpy pandas scikit-learn wandb opencv-python-headless jupyter matplotlib
 
-# Command to run the Python script
-CMD ["python", "Lab5_distance_classification.ipynb"]
+# Convert Jupyter Notebook to Python script inside the container
+RUN jupyter nbconvert --to script Lab5_distance_classification.ipynb
+
+# Run the converted Python script
+CMD ["python", "Lab5_distance_classification.py"]
