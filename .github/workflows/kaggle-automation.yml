@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install kaggle nbconvert wandb numpy pandas scikit-learn
+          pip install kaggle nbconvert jupyter wandb numpy pandas scikit-learn
 
       - name: Authenticate Kaggle API
         env:
@@ -40,7 +40,17 @@ jobs:
           ls -l  # Show all files for debugging
 
       - name: Push Notebook to Kaggle
-        run: kaggle kernels push -p .
+        run: |
+          if [ -f "distance_classification.ipynb" ]; then
+            kaggle kernels push -p .
+          else
+            echo "Error: Notebook 'distance_classification.ipynb' not found!"
+            exit 1
+          fi
+
+      - name: Execute Jupyter Notebook
+        run: |
+          jupyter nbconvert --to notebook --execute distance_classification.ipynb --output executed_notebook.ipynb
 
       - name: Download Kaggle Output
         run: |
