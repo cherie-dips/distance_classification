@@ -18,4 +18,4 @@ jobs:
           pip install numpy pandas scikit-learn
 
       - name: Run distance_classification
-        run: python Lab5_distance_classification.ipynb
+        run: python distance_classification.ipynb

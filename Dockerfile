@@ -11,7 +11,7 @@ COPY . .
 RUN pip install --no-cache-dir numpy pandas scikit-learn wandb opencv-python-headless jupyter matplotlib
 
 # Convert Jupyter Notebook to Python script inside the container
-RUN jupyter nbconvert --to script Lab5_distance_classification.ipynb
+RUN jupyter nbconvert --to script distance_classification.ipynb
 
 # Run the converted Python script
-CMD ["python", "Lab5_distance_classification.py"]
+CMD ["python", "distance_classification.py"]
