@@ -30,16 +30,18 @@ jobs:
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: echo "Kaggle API Authenticated"
 
-      - name: Push Notebook to Kaggle
-        working-directory: distance_classification  # Ensures correct directory
+      - name: Check Directory Structure
         run: |
+          echo "Current Directory: $(pwd)"
           ls -l  # Debugging: Show all files
-          kaggle kernels push -p .
+
+      - name: Push Notebook to Kaggle
+        run: |
+          kaggle kernels push -p distance_classification  # Use correct relative path
 
       - name: Download Kaggle Output
-        working-directory: distance_classification  # Ensures correct directory
         run: |
-          kaggle kernels output dhawadedipti/distance-classification -p output/
+          kaggle kernels output dhawadedipti/distance-classification -p distance_classification/output/
 
       - name: Log Results to WandB
         env:
