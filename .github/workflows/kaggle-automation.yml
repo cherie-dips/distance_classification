@@ -32,26 +32,20 @@ jobs:
           mkdir -p ~/.kaggle
           echo "{\"username\":\"$KAGGLE_USERNAME\",\"key\":\"$KAGGLE_KEY\"}" > ~/.kaggle/kaggle.json
           chmod 600 ~/.kaggle/kaggle.json
-          kaggle --version  # Verify Kaggle CLI
+          kaggle --version  # Verify Kaggle CLI is installed
 
-      - name: Check Directory Structure
+      - name: Debug Directory Structure
         run: |
           echo "Current Directory: $(pwd)"
-          ls -l  # Debugging: Show all files
+          ls -l  # Show all files for debugging
 
       - name: Push Notebook to Kaggle
-        run: |
-          if [ -d "distance_classification" ]; then
-            kaggle kernels push -p distance_classification
-          else
-            echo "Error: 'distance_classification' directory not found!"
-            exit 1
-          fi
+        run: kaggle kernels push -p .
 
       - name: Download Kaggle Output
         run: |
-          mkdir -p distance_classification/output/
-          kaggle kernels output dhawadedipti/distance-classification -p distance_classification/output/
+          mkdir -p output/
+          kaggle kernels output dhawadedipti/distance-classification -p output/
 
       - name: Log Results to WandB
         env:
