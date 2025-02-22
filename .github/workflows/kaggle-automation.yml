@@ -24,16 +24,26 @@ jobs:
         run: |
           pip install kaggle nbconvert wandb numpy pandas scikit-learn
 
-      - name: Run Kaggle Notebook
+      - name: Authenticate Kaggle API
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        run: echo "Kaggle API Authenticated"
+
+      - name: Push Notebook to Kaggle
+        working-directory: distance_classification  # Ensures correct directory
         run: |
-          kaggle kernels push -p .  # Push notebook to Kaggle
-          kaggle kernels output <dhawadedipti/distance-classification> -p output/  # Download outputs
+          ls -l  # Debugging: Show all files
+          kaggle kernels push -p .
+
+      - name: Download Kaggle Output
+        working-directory: distance_classification  # Ensures correct directory
+        run: |
+          kaggle kernels output dhawadedipti/distance-classification -p output/
 
       - name: Log Results to WandB
+        env:
+          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
         run: |
           wandb login $WANDB_API_KEY
-          python process_results.py  # (Optional) Process results and log to WandB
+          python process_results.py  # Ensure this script exists
