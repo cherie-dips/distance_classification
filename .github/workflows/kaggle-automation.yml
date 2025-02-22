@@ -1,0 +1,39 @@
+name: Automate Kaggle Notebook Execution
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run_notebook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install kaggle nbconvert wandb numpy pandas scikit-learn
+
+      - name: Run Kaggle Notebook
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        run: |
+          kaggle kernels push -p .  # Push notebook to Kaggle
+          kaggle kernels output <dhawadedipti/distance-classification> -p output/  # Download outputs
+
+      - name: Log Results to WandB
+        run: |
+          wandb login $WANDB_API_KEY
+          python process_results.py  # (Optional) Process results and log to WandB
