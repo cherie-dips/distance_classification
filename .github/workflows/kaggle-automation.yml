@@ -39,6 +39,19 @@ jobs:
           echo "Current Directory: $(pwd)"
           ls -l  # Show all files for debugging
 
+      - name: Set WANDB API Key
+        run: |
+          echo "WANDB_API_KEY=${{ secrets.WANDB_API_KEY }}" >> $GITHUB_ENV
+
+      - name: Debug WANDB_API_KEY
+        run: |
+          if [ -z "$WANDB_API_KEY" ]; then
+            echo "❌ Error: WANDB_API_KEY is not set!"
+            exit 1
+          else
+            echo "✅ WANDB_API_KEY is set: ${WANDB_API_KEY:0:5}******"
+          fi
+
       - name: Push Notebook to Kaggle
         run: |
           if [ -f "distance_classification.ipynb" ]; then
@@ -58,8 +71,6 @@ jobs:
           kaggle kernels output dhawadedipti/distance-classification -p output/
 
       - name: Log Results to WandB
-        env:
-          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
         run: |
           wandb login $WANDB_API_KEY
           if [ -f "process_results.py" ]; then
