@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install kaggle nbconvert jupyter wandb numpy pandas scikit-learn
+          pip install kaggle nbconvert jupyter wandb numpy pandas scikit-learn opencv-python matplotlib scipy
 
       - name: Authenticate Kaggle API
         env:

@@ -15,7 +15,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install numpy pandas scikit-learn
+          pip install numpy pandas scikit-learn jupyter opencv-python matplotlib scipy
 
-      - name: Run distance_classification
-        run: python distance_classification.ipynb
+      - name: Convert Jupyter Notebook to Python
+        run: jupyter nbconvert --to script distance_classification.ipynb
+
+      - name: Run Converted Script
+        run: python distance_classification.py
