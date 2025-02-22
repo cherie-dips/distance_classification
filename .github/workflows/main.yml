@@ -5,6 +5,8 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}  # Inject the secret as an environment variable
     steps:
       - uses: actions/checkout@v3
 
@@ -15,7 +17,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install kaggle nbconvert jupyter wandb numpy pandas scikit-learn jupyter opencv-python matplotlib scipy
+          pip install kaggle nbconvert jupyter wandb numpy pandas scikit-learn opencv-python matplotlib scipy
 
       - name: Convert Jupyter Notebook to Python
         run: jupyter nbconvert --to script distance_classification.ipynb
