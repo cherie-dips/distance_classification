@@ -28,7 +28,11 @@ jobs:
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-        run: echo "Kaggle API Authenticated"
+        run: |
+          mkdir -p ~/.kaggle
+          echo "{\"username\":\"$KAGGLE_USERNAME\",\"key\":\"$KAGGLE_KEY\"}" > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+          kaggle --version  # Verify Kaggle CLI
 
       - name: Check Directory Structure
         run: |
@@ -37,10 +41,16 @@ jobs:
 
       - name: Push Notebook to Kaggle
         run: |
-          kaggle kernels push -p distance_classification  # Use correct relative path
+          if [ -d "distance_classification" ]; then
+            kaggle kernels push -p distance_classification
+          else
+            echo "Error: 'distance_classification' directory not found!"
+            exit 1
+          fi
 
       - name: Download Kaggle Output
         run: |
+          mkdir -p distance_classification/output/
           kaggle kernels output dhawadedipti/distance-classification -p distance_classification/output/
 
       - name: Log Results to WandB
@@ -48,4 +58,8 @@ jobs:
           WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
         run: |
           wandb login $WANDB_API_KEY
-          python process_results.py  # Ensure this script exists
+          if [ -f "process_results.py" ]; then
+            python process_results.py
+          else
+            echo "Warning: process_results.py not found, skipping WandB logging."
+          fi
